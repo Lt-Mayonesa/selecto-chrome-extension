@@ -7,7 +7,8 @@
     },
     "permissions": [
         "tabs",
-        "clipboardWrite"
+        "clipboardWrite",
+        "notifications"
     ],
     "background": {
         "scripts": ["src/background.js"],

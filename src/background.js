@@ -2,11 +2,13 @@ function copy(tabs) {
     let text = '';
     
     tabs.forEach(each => {
-        text += [
-            each.title,
-            each.url,
-            '',''
-        ].join('\n');
+        if (each.url !== 'chrome://newtab/') {
+            text += [
+                each.title,
+                each.url,
+                '',''
+            ].join('\n');
+        }
     });
     
     //Create a textbox field where we can insert text to. 
@@ -34,14 +36,34 @@ function copy(tabs) {
     document.body.removeChild(copyFrom);
 }
 
+function notifyAll() {
+    chrome.notifications.create('copy-all', {
+        type: 'basic',
+        iconUrl: '../icon.png',
+        title: 'Selecto',
+        message: 'Copied URLs from all tabs'
+    }, console.log);
+}
+
+function notifySelected() {
+    chrome.notifications.create('copy-selected', {
+        type: 'basic',
+        iconUrl: '../icon.png',
+        title: 'Selecto',
+        message: 'Copied URLs from selected tabs'
+    }, console.log);
+}
+
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.tabs.query({highlighted: true, currentWindow: true}, (tabs) => {
         if (tabs.length === 1) {
             chrome.tabs.query({currentWindow: true}, tabs => {
                    copy(tabs);
+                   notifyAll();
             });
         } else {
             copy(tabs);
+            notifySelected();
         }
     });
 });
